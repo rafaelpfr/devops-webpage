@@ -3,76 +3,79 @@
   gather_facts: No
   hosts: all
 
+  collections:
+    - community.kubernetes
+
   tasks:
     - name: Create a Deployment by reading the definition from a local file
-      k8s:
-       state: present
-       definition:
-         name: testing
-         apiVersion: apps/v1
-         kind: Deployment
-         metadata:
-           name: nginx-app
-           namespace: default
-           labels:
-             app: nginx-app
-         spec:
-           replicas: 1
-           selector:
-             matchLabels:
-               app: nginx-app
-           template:
-             metadata:
-               labels:
-                 app: nginx-app
-             spec:
-               containers:
-               - name: nginx
-                 image: nginx-static-site
-                 imagePullPolicy: Never
-                 ports:
-                 - containerPort: 80
+      community.kubernetes.k8s:
+        state: present
+        definition:
+          name: testing
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: nginx-app
+            namespace: default
+            labels:
+              app: nginx-app
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: nginx-app
+            template:
+              metadata:
+                labels:
+                  app: nginx-app
+              spec:
+                containers:
+                - name: nginx
+                  image: nginx-static-site
+                  imagePullPolicy: Never
+                  ports:
+                  - containerPort: 80
 
 
     - name: Create a Service
-      k8s:
-       state: present
-       definition:
-        name: testing
-        apiVersion: v1
-        kind: Service
-        metadata:  
-         name: nginx-service
-         namespace: default
-        spec:
-         selector:    
-          app: nginx-app
-         type: ClusterIP
-         ports:  
-         - name: http
-           port: 80
-           protocol: TCP
+      community.kubernetes.k8s:
+        state: present
+        definition:
+          name: testing
+          apiVersion: v1
+          kind: Service
+          metadata:  
+            name: nginx-service
+            namespace: default
+          spec:
+            selector:    
+              app: nginx-app
+          type: ClusterIP
+          ports:  
+          - name: http
+            port: 80
+            protocol: TCP
 
 
     - name: Create Ingress
-      k8s:
-       state: present
-       definition:
-        name: testing
-        apiVersion: networking.k8s.io/v1
-        kind: Ingress
-        metadata:
-         name: nginx-ingress
-         namespace: default
-        spec:
-         rules:
-         - http:
-            paths:
-            - path: /
-              pathType: Prefix
-              backend:
-               service:
-                name: nginx-service
-                port:
-                 number: 80
- 
+      community.kubernetes.k8s:
+        state: present
+        definition:
+          name: testing
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          metadata:
+            name: nginx-ingress
+            namespace: default
+          spec:
+            rules:
+            - http:
+                paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: nginx-service
+                      port:
+                        number: 80
+
