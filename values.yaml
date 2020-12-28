@@ -1,0 +1,12 @@
+image:
+  registry: rafa73
+  repository: static_site
+  tag: latest
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 10s         # Interval at which metrics should be scraped
+    selector:
+      release: my-prometheus
