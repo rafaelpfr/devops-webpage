@@ -1,5 +1,5 @@
 ---
-- name: Install docker
+- name: Create kubernetes environment
   gather_facts: No
   hosts: all
 
