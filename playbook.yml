@@ -3,17 +3,14 @@
   gather_facts: No
   hosts: all
 
-  collections:
-    - community.kubernetes
-
   tasks:
-    - name: Create a Deployment by reading the definition from a local file
+    - name: Create a Deployment object
       community.kubernetes.k8s:
         state: present
         definition:
-          name: testing
           apiVersion: apps/v1
           kind: Deployment
+          force: yes
           metadata:
             name: nginx-app
             namespace: default
@@ -31,17 +28,15 @@
               spec:
                 containers:
                 - name: nginx
-                  image: nginx-static-site
-                  imagePullPolicy: Never
+                  image: rafa73/static_site:{{ IMAGE_TAG }}
                   ports:
                   - containerPort: 80
 
 
-    - name: Create a Service
+    - name: Create a Service object
       community.kubernetes.k8s:
         state: present
         definition:
-          name: testing
           apiVersion: v1
           kind: Service
           metadata:  
@@ -50,18 +45,17 @@
           spec:
             selector:    
               app: nginx-app
-          type: ClusterIP
-          ports:  
-          - name: http
-            port: 80
-            protocol: TCP
+            type: ClusterIP
+            ports:  
+            - name: http
+              port: 80
+              protocol: TCP
 
 
-    - name: Create Ingress
+    - name: Create an Ingress object
       community.kubernetes.k8s:
         state: present
         definition:
-          name: testing
           apiVersion: networking.k8s.io/v1
           kind: Ingress
           metadata:
