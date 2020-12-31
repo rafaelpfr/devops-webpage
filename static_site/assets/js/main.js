@@ -1,105 +1,154 @@
-(function($) {
-  
-  "use strict";  
+/**
+* Template Name: Avilon - v2.2.0
+* Template URL: https://bootstrapmade.com/avilon-bootstrap-landing-page-template/
+* Author: BootstrapMade.com
+* License: https://bootstrapmade.com/license/
+*/
+!(function($) {
+  "use strict";
 
-  $(window).on('load', function() {
-
-  /*Page Loader active
-  ========================================================*/
-  $('#preloader').fadeOut();
-
-  // Sticky Nav
-    $(window).on('scroll', function() {
-        if ($(window).scrollTop() > 50) {
-            $('.scrolling-navbar').addClass('top-nav-collapse');
-        } else {
-            $('.scrolling-navbar').removeClass('top-nav-collapse');
-        }
-    });
-
-    // one page navigation 
-    $('.navbar-nav').onePageNav({
-      currentClass: 'active'
-    });
-
-    /* Auto Close Responsive Navbar on Click
-    ========================================================*/
-    function close_toggle() {
-        if ($(window).width() <= 768) {
-            $('.navbar-collapse a').on('click', function () {
-                $('.navbar-collapse').collapse('hide');
-            });
-        }
-        else {
-            $('.navbar .navbar-inverse a').off('click');
-        }
+  // Header fixed and Back to top button
+  $(window).scroll(function() {
+    if ($(this).scrollTop() > 100) {
+      $('.back-to-top').fadeIn('slow');
+      $('#header').addClass('header-fixed');
+    } else {
+      $('.back-to-top').fadeOut('slow');
+      $('#header').removeClass('header-fixed');
     }
-    close_toggle();
-    $(window).resize(close_toggle);
+  });
 
-    /* WOW Scroll Spy
-    ========================================================*/
-     var wow = new WOW({
-      //disabled for mobile
-        mobile: false
+  if ($(this).scrollTop() > 100) {
+    $('.back-to-top').fadeIn('slow');
+    $('#header').addClass('header-fixed');
+  }
+
+  $('.back-to-top').click(function() {
+    $('html, body').animate({
+      scrollTop: 0
+    }, 1500, 'easeInOutExpo');
+    return false;
+  });
+
+  // Initiate the wowjs animation library
+  new WOW().init();
+
+  // Initiate superfish on nav menu
+  $('.nav-menu').superfish({
+    animation: {
+      opacity: 'show'
+    },
+    speed: 400
+  });
+
+  // Mobile Navigation
+  if ($('#nav-menu-container').length) {
+    var $mobile_nav = $('#nav-menu-container').clone().prop({
+      id: 'mobile-nav'
+    });
+    $mobile_nav.find('> ul').attr({
+      'class': '',
+      'id': ''
+    });
+    $('body').append($mobile_nav);
+    $('body').prepend('<button type="button" id="mobile-nav-toggle"><i class="fa fa-bars"></i></button>');
+    $('body').append('<div id="mobile-body-overly"></div>');
+    $('#mobile-nav').find('.menu-has-children').prepend('<i class="fa fa-chevron-down"></i>');
+
+    $(document).on('click', '.menu-has-children i', function(e) {
+      $(this).next().toggleClass('menu-item-active');
+      $(this).nextAll('ul').eq(0).slideToggle();
+      $(this).toggleClass("fa-chevron-up fa-chevron-down");
     });
 
-    wow.init();    
+    $(document).on('click', '#mobile-nav-toggle', function(e) {
+      $('body').toggleClass('mobile-nav-active');
+      $('#mobile-nav-toggle i').toggleClass('fa-times fa-bars');
+      $('#mobile-body-overly').toggle();
+    });
 
-     /* Testimonials Carousel 
-    ========================================================*/
-    var owl = $("#testimonials");
-      owl.owlCarousel({
-        loop: true,
-        nav: false,
-        dots: true,
-        center: true,
-        margin: 15,
-        slideSpeed: 1000,
-        stopOnHover: true,
-        autoPlay: true,
-        responsiveClass: true,
-        responsiveRefreshRate: true,
-        responsive : {
-            0 : {
-                items: 1
-            },
-            768 : {
-                items: 2
-            },
-            960 : {
-                items: 3
-            },
-            1200 : {
-                items: 3
-            },
-            1920 : {
-                items: 3
-            }
+    $(document).click(function(e) {
+      var container = $("#mobile-nav, #mobile-nav-toggle");
+      if (!container.is(e.target) && container.has(e.target).length === 0) {
+        if ($('body').hasClass('mobile-nav-active')) {
+          $('body').removeClass('mobile-nav-active');
+          $('#mobile-nav-toggle i').toggleClass('fa-times fa-bars');
+          $('#mobile-body-overly').fadeOut();
         }
-      });  
-      
+      }
+    });
+  } else if ($("#mobile-nav, #mobile-nav-toggle").length) {
+    $("#mobile-nav, #mobile-nav-toggle").hide();
+  }
 
-    /* Back Top Link active
-    ========================================================*/
-      var offset = 200;
-      var duration = 500;
-      $(window).scroll(function() {
-        if ($(this).scrollTop() > offset) {
-          $('.back-to-top').fadeIn(400);
-        } else {
-          $('.back-to-top').fadeOut(400);
-        }
-      });
+  // Smooth scroll for the navigation menu and links with .scrollto classes
+  var scrolltoOffset = $('#header').outerHeight() - 21;
+  $(document).on('click', '.nav-menu a, #mobile-nav a, .scrollto', function(e) {
+    if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+      var target = $(this.hash);
+      if (target.length) {
+        e.preventDefault();
 
-      $('.back-to-top').on('click',function(event) {
-        event.preventDefault();
+        var scrollto = target.offset().top - scrolltoOffset;
+
         $('html, body').animate({
-          scrollTop: 0
-        }, 600);
+          scrollTop: scrollto
+        }, 1500, 'easeInOutExpo');
+
+        if ($(this).parents('.nav-menu').length) {
+          $('.nav-menu .menu-active').removeClass('menu-active');
+          $(this).closest('li').addClass('menu-active');
+        }
+
+        if ($('body').hasClass('mobile-nav-active')) {
+          $('body').removeClass('mobile-nav-active');
+          $('#mobile-nav-toggle i').toggleClass('fa-times fa-bars');
+          $('#mobile-body-overly').fadeOut();
+        }
         return false;
-      });
+      }
+    }
+  });
 
-  });      
+  // Activate smooth scroll on page load with hash links in the url
+  $(document).ready(function() {
+    if (window.location.hash) {
+      var initial_nav = window.location.hash;
+      if ($(initial_nav).length) {
+        var scrollto = $(initial_nav).offset().top - scrolltoOffset;
+        $('html, body').animate({
+          scrollTop: scrollto
+        }, 1500, 'easeInOutExpo');
+      }
+    }
+  });
 
-}(jQuery));
+  // Navigation active state on scroll
+  var nav_sections = $('section');
+  var main_nav = $('.nav-menu, .mobile-nav');
+
+  $(window).on('scroll', function() {
+    var cur_pos = $(this).scrollTop() + 200;
+
+    nav_sections.each(function() {
+      var top = $(this).offset().top,
+        bottom = top + $(this).outerHeight();
+
+      if (cur_pos >= top && cur_pos <= bottom) {
+        if (cur_pos <= bottom) {
+          main_nav.find('li').removeClass('menu-active');
+        }
+        main_nav.find('a[href="#' + $(this).attr('id') + '"]').parent('li').addClass('menu-active');
+      }
+      if (cur_pos < 300) {
+        $(".nav-menu li:first").addClass('menu-active');
+      }
+    });
+  });
+
+  // Initiate venobox (lightbox feature used in portofilo)
+  $(document).ready(function() {
+    $('.venobox').venobox();
+  });
+
+})(jQuery);
