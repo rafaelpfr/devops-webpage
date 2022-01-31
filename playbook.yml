@@ -5,7 +5,7 @@
 
   tasks:
     - name: Create a Deployment object
-      community.kubernetes.k8s:
+      kubernetes.core.k8s:
         state: present
         definition:
           apiVersion: apps/v1
@@ -34,7 +34,7 @@
 
 
     - name: Create a Service object
-      community.kubernetes.k8s:
+      kubernetes.core.k8s:
         state: present
         definition:
           apiVersion: v1
@@ -53,7 +53,7 @@
 
 
     - name: Create an Ingress object
-      community.kubernetes.k8s:
+      kubernetes.core.k8s:
         state: present
         definition:
           apiVersion: networking.k8s.io/v1
