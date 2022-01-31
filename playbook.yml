@@ -67,7 +67,7 @@
                 paths:
                 - path: /
                   pathType: Prefix
-                  defaultBackend:
+                  backend:
                     service:
                       name: nginx-service
                       port:
